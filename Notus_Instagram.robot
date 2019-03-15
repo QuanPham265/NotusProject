@@ -1,6 +1,7 @@
 *** Settings ***
 Library  SeleniumLibrary
 Library  Dialogs
+Library  /Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/robot/libraries/Process.py
 Resource  ./Resources/Function.robot
 
 Test Setup      PO_MainPage.Begin Web Test
@@ -29,10 +30,18 @@ ${TAGS_NATURE}      naturephotography   green
 
 
 # HOW TO RUN
-# robot -d /Users/notuspham/Downloads/Log_RF notus_instagram.robot
+# robot -d /Users/notuspham/Downloads/Log_RF  -i start notus_instagram.robot
 *** Test Cases ***
 Like Photo In List Given Profile Name
+    [Tags]  start
+    Function.Navigate To Instagram Web  ${URL}
+    Search Tags  photooftheday
+    run keyword and ignore error  Like Sequentially With Number Account  400
+#    run process  pmset displaysleepnow
+
+
+Draft
+    [Tags]  draft
     Function.Log In  ${URL}  ${URL_LogIn}  @{USERNAME}[1]  @{PASSWORD}[1]
-    Search Tags  travelphotography
-    run keyword and ignore error  Like Sequentially With Number Account  1
+    Function.Go Directly To User Profile  chefvanessalauren
     pause execution

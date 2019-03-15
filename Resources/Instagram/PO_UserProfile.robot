@@ -1,27 +1,33 @@
 *** Settings ***
 Library  SeleniumLibrary
-Library  String
+Library  /Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/robot/libraries/String.py
 Library  Dialogs
+Library  Collections
 
 *** Variables ***
-${ID_Name} =        xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/div[1]/h1
-${ID_Posts} =       xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[1]/span/span[1]
-${ID_Follower} =    xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[2]/a/span
-${ID_Following} =   xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[3]/a/span
-${ID_Follower_Zero} =    xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[2]/span/span
-${ID_Following_Zero} =  xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[3]/span/span
+${ID_Name}              xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/div[1]/h1
+${ID_Posts}             xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[1]/span/span[1]
+${ID_Follower}          xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[2]/a/span
+${ID_Following}         xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[3]/a/span
+${ID_Follower_Zero}     xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[2]/span/span
+${ID_Following_Zero}    xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[3]/span/span
 
-
-${ID_Recent_Photo} =  xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div[2]/article/div[1]/div/div[1]/div[1]/a/div/div[2]
-${ID_Recent_Photo_WStory} =  xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div[3]/article/div[1]/div/div[1]/div[1]/a/div/div[2]
-${ID_Like} =  xpath://span[@aria-label='Comment']/parent::*/parent::*/parent::*/span[1]/button/span[@aria-label='Like']
-${ID_Btn_Next}          xpath://a[contains(text(),'Next')]
+@{order_photo_like}         1  2  3
+${ID_Exist_WS}              xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div
+${ID_Recent_Photo}          xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div[2]/article/div[1]/div/div[1]/div[%order%]/a
+${ID_Recent_Photo_WStory}   xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div[3]/article/div[1]/div/div[1]/div[%order%]/a
+${ID_Like}                  xpath://span[@aria-label='Comment']/parent::*/parent::*/parent::*/span[1]/button/span[@aria-label='Like']
+${ID_Btn_Next}              xpath://a[contains(text(),'Next')]
 
 *** Keywords ***
 Update Working Windows
+    [Arguments]  ${root_window}
     ${list_windows} =  get window handles
-    log  ${list_windows}
-    select window  NEW
+    ${nb_tabs_open} =  get length  ${list_windows}
+    ${bln_nb_expc_window} =   run keyword and return status  should be equal as integers  ${nb_tabs_open}  2
+    run keyword if  ${bln_nb_expc_window}  remove values from list  ${list_windows}  ${root_window}
+    select window  @{list_windows}[0]
+    [Return]  ${bln_nb_expc_window}
 
 Get User Profile Name
     ${profile_name} =  get text  ${ID_Name}
@@ -80,17 +86,24 @@ Get All Infor Of Profile
     ${nb_posts_final} =  convert to integer  ${nb_posts_final}
     [Return]  ${profile_name}  ${nb_posts_final}  ${nb_follower_final}  ${nb_following_final}
 
-Open Most Recent Photo
-    pause execution
-    run keyword and ignore error      click element  ${ID_Recent_Photo}
-    pause execution
-    run keyword and ignore error      click element  ${ID_Recent_Photo}
-    pause execution
-    run keyword and ignore error      click element  ${ID_Recent_Photo_WStory}
-    pause execution
-    run keyword and ignore error      click element  ${ID_Recent_Photo_WStory}
-    pause execution
-    sleep  2s
+Open Most Recent Photo And Like
+    ${count} =  get element count  ${ID_Exist_WS}
+    ${id_photo_tmp} =   set variable if
+    ...                 ${count} == 2        ${ID_Recent_Photo}
+    ...                 ${count} == 3        ${ID_Recent_Photo_WStory}
+    :FOR  ${order}  IN  @{order_photo_like}
+    \   ${id_photo} =  replace string  ${id_photo_tmp}  %order%  ${order}
+    \   ${url_photo} =  get element attribute  ${id_photo}  href
+    \   go to  ${url_photo}
+    \   sleep  1s
+    \   Like Photo In Profile
+    \   go back
+    \   wait until element is visible  ${id_photo}  timeout=10s
+
+Like Photo In Profile
+    run keyword and ignore error  wait until element is visible  xpath://span[@aria-label='Comment']  timeout=10s
+    ${status} =  run keyword and return status  page should contain element   xpath://span[@aria-label='Share Post']/parent::*/parent::*/parent::*/span[1]/button/span[@aria-label='Like']
+    run keyword if  ${status}  click element  xpath://span[@aria-label='Share Post']/parent::*/parent::*/parent::*/span[1]/button/span[@aria-label='Like']
 
 Photo Opened Successfully
     wait until element is visible  ${ID_Like}
