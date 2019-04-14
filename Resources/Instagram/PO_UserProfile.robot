@@ -12,10 +12,10 @@ ${ID_Following}         xpath://button[contains(text(),'Follow')]/parent::*/pare
 ${ID_Follower_Zero}     xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[2]/span/span
 ${ID_Following_Zero}    xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[3]/span/span
 
-@{order_photo_like}         1  2  3
+@{order_photo_like}         7  1  3  4  6
 ${ID_Exist_WS}              xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div
-${ID_Recent_Photo}          xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div[2]/article/div[1]/div/div[1]/div[%order%]/a
-${ID_Recent_Photo_WStory}   xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div[3]/article/div[1]/div/div[1]/div[%order%]/a
+${ID_Recent_Photo}          xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div[2]/article/div[1]/div/div[%row%]/div[%order%]/a
+${ID_Recent_Photo_WStory}   xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div[3]/article/div[1]/div/div[%row%]/div[%order%]/a
 ${ID_Like}                  xpath://span[@aria-label='Comment']/parent::*/parent::*/parent::*/span[1]/button/span[@aria-label='Like']
 ${ID_Btn_Next}              xpath://a[contains(text(),'Next')]
 
@@ -30,6 +30,7 @@ Update Working Windows
     [Return]  ${bln_nb_expc_window}
 
 Get User Profile Name
+    wait until element is visible  ${ID_Name}  timeout=10s
     ${profile_name} =  get text  ${ID_Name}
     log  ${profile_name}
     [Return]  ${profile_name}
@@ -92,13 +93,28 @@ Open Most Recent Photo And Like
     ...                 ${count} == 2        ${ID_Recent_Photo}
     ...                 ${count} == 3        ${ID_Recent_Photo_WStory}
     :FOR  ${order}  IN  @{order_photo_like}
-    \   ${id_photo} =  replace string  ${id_photo_tmp}  %order%  ${order}
+    \   ${row}  ${order_new} =  Detect Row And Order Of Photos  ${order}
+    \   ${id_photo} =  replace string  ${id_photo_tmp}  %order%  ${order_new}
+    \   ${id_photo} =  replace string  ${id_photo}      %row%    ${row}
     \   ${url_photo} =  get element attribute  ${id_photo}  href
     \   go to  ${url_photo}
     \   sleep  1s
     \   Like Photo In Profile
     \   go back
     \   wait until element is visible  ${id_photo}  timeout=10s
+
+Detect Row And Order Of Photos
+    [Arguments]  ${order}
+    ${row} =  set variable if
+    ...  0 < ${order} <= 3      1
+    ...  3 < ${order} <= 6      2
+    ...  6 < ${order} <= 9      3
+
+    ${order_tmp} =  evaluate  ${order} - 3*(${row}-1)
+    ${order_new} =  set variable if  ${row} == 1    ${order}    ${order_tmp}
+    ${order_new} =  convert to string  ${order_new}
+    ${row} =        convert to string  ${row}
+    [Return]  ${row}  ${order_new}
 
 Like Photo In Profile
     run keyword and ignore error  wait until element is visible  xpath://span[@aria-label='Comment']  timeout=10s
