@@ -19,7 +19,6 @@ Go To Page Show Photo With Tag
 Click Most Recent Photo
     wait until element is visible  ${ID_MostRecent_Photo_SearchTag}  timeout=5s
     click element  ${ID_MostRecent_Photo_SearchTag}
-    click element  ${ID_MostRecent_Photo_SearchTag}
     sleep  1s
 
 Get Profile Name
