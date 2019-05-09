@@ -5,14 +5,15 @@ Library  Dialogs
 Library  Collections
 
 *** Variables ***
-${ID_Name}              xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/div[1]/h1
+${ID_Name}              xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/h1
 ${ID_Posts}             xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[1]/span/span[1]
 ${ID_Follower}          xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[2]/a/span
 ${ID_Following}         xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[3]/a/span
 ${ID_Follower_Zero}     xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[2]/span/span
 ${ID_Following_Zero}    xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[3]/span/span
+${ID_Account_Private}   xpath://h2[contains(text(),'Account is Private')]
 
-@{order_photo_like}         7  1  3  4  6
+@{order_photo_like}         2  1  8
 ${ID_Exist_WS}              xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div
 ${ID_Recent_Photo}          xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div[2]/article/div[1]/div/div[%row%]/div[%order%]/a
 ${ID_Recent_Photo_WStory}   xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div[3]/article/div[1]/div/div[%row%]/div[%order%]/a
@@ -28,6 +29,10 @@ Update Working Windows
     run keyword if  ${bln_nb_expc_window}  remove values from list  ${list_windows}  ${root_window}
     select window  @{list_windows}[0]
     [Return]  ${bln_nb_expc_window}
+
+Verify Page Specify User Profile Loaded
+    [Arguments]  ${profile_name}
+    wait until page contains  ${profile_name}
 
 Get User Profile Name
     wait until element is visible  ${ID_Name}  timeout=10s
@@ -87,7 +92,7 @@ Get All Infor Of Profile
     ${nb_posts_final} =  convert to integer  ${nb_posts_final}
     [Return]  ${profile_name}  ${nb_posts_final}  ${nb_follower_final}  ${nb_following_final}
 
-Open Most Recent Photo And Like
+Open And Like List Of Ordered Photo
     ${count} =  get element count  ${ID_Exist_WS}
     ${id_photo_tmp} =   set variable if
     ...                 ${count} == 2        ${ID_Recent_Photo}
@@ -137,3 +142,6 @@ Move Next Photo In The Right
 Close Profile Tab
     close window
 
+Check Account IsPrivate
+    ${bln_isprivate} =  run keyword and return status  wait until page contains element  ${ID_Account_Private}  timeout=3s
+    [Return]  ${bln_isprivate}
