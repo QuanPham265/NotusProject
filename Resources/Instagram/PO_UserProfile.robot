@@ -6,14 +6,14 @@ Library  Collections
 
 *** Variables ***
 ${ID_Name}              xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/h1
-${ID_Posts}             xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[1]/span/span[1]
-${ID_Follower}          xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[2]/a/span
-${ID_Following}         xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[3]/a/span
-${ID_Follower_Zero}     xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[2]/span/span
-${ID_Following_Zero}    xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/ul/li[3]/span/span
+${ID_Posts}             xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/parent::*/ul/li[1]/span/span[1]
+${ID_Follower}          xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/parent::*/ul/li[2]/a/span
+${ID_Following}         xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/parent::*/ul/li[3]/a/span
+${ID_Follower_Zero}     xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/parent::*/ul/li[2]/span/span
+${ID_Following_Zero}    xpath://button[contains(text(),'Follow')]/parent::*/parent::*/parent::*/parent::*/parent::*/ul/li[3]/span/span
 ${ID_Account_Private}   xpath://h2[contains(text(),'Account is Private')]
 
-@{order_photo_like}         2  1  8
+@{order_photo_like}         2  1  4  7
 ${ID_Exist_WS}              xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div
 ${ID_Recent_Photo}          xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div[2]/article/div[1]/div/div[%row%]/div[%order%]/a
 ${ID_Recent_Photo_WStory}   xpath://span[contains(text(),'Posts')]/parent::*/parent::*/parent::*/parent::*/div[3]/article/div[1]/div/div[%row%]/div[%order%]/a

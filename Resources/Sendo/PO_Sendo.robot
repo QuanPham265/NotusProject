@@ -11,7 +11,7 @@ ${Ele_InputName}            xpath://input[@name='email']
 ${Ele_InputPass}            xpath://input[@name='password']
 ${Ele_Btn_Login}            xpath://button[@class='btnLogin_1Dve']
 ${Ele_Campaign}             xpath://div[@class='Campaign__innerWrapper']
-${Ele_Ads}                  xpath://button[@title='Close']
+${Ele_Ads}                  xpath://div[@class='modal-content']/button
 ${Ele_BuyNow}               xpath://button[contains(text(),'Mua ngay')]
 ${Ele_Price}                xpath://span[contains(text(),'Tổng tiền hàng')]/parent::*/span[2]
 
@@ -21,7 +21,8 @@ Access Web Sendo
     go to  ${url}
 
 Close Ads
-    ${status} =  run keyword and return status  wait until page contains element  ${Ele_Campaign}  timeout=30s
+    ${status} =  run keyword and return status  wait until page contains element  ${Ele_Ads}  timeout=30s
+    run keyword if  ${status}  sleep  3s
     run keyword if  ${status}  capture page screenshot
     run keyword if  ${status}  click element  ${Ele_Ads}
     run keyword if  ${status}  sleep  1s
@@ -38,7 +39,7 @@ Sign In Exist Account
     click element  ${ELe_Text_HavedAcc}
 
 Input UserName And Password
-    [Arguments]  ${username}  ${password}
+    [Arguments]  ${username}  ${password}=Pq260592
     wait until element is visible  ${Ele_InputName}  timeout=10s
     input text  ${Ele_InputName}   ${username}
     input text  ${Ele_InputPass}   ${password}
