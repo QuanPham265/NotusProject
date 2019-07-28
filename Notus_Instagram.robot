@@ -37,14 +37,14 @@ ${TAGS_NATURE}      naturephotography   green
 Like Mass Photos By Popular Hashtag
     [Tags]  hashtag  all
     Function.Navigate To Instagram Web  ${URL}
-    Search Tags  hoian
-    run keyword and ignore error  Like Sequentially With Number Account  300
+    Search Tags  vsco
+    run keyword and ignore error  Like Sequentially With Number Account  200
 #    run    pmset sleepnow
 
 
 Like Potential Instagram Profile
     [Tags]  potential  all
-    :FOR  ${row}  IN RANGE  1900  2200   #odcc 6442
+    :FOR  ${row}  IN RANGE  3800  4000   #odcc 6442
     \   Function.Navigate To Instagram Web  ${URL}
     \   ${user_profile_name} =  Function.Read User Profile Name From File Excel  profile_kol=odcc  row=${row}  sheet=user_like
     \   log to console  ${\n}${row}. User Profile: ${user_profile_name}
