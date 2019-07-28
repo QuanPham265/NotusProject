@@ -1,5 +1,6 @@
 *** Settings ***
 Library  AppiumLibrary
+Documentation  Page Object Of Feature Add Bank Card
 
 *** Variables ***
 # Screen Add Card
@@ -73,6 +74,16 @@ Get Bank Card Date - State Display      #true: display, false: hidden
     ${state_displayed} =  get element attribute  ${ID_AddCard_Date}  displayed
     [Return]  ${state_displayed}
 
+Get Error Notification - Title
+    wait until element is visible  ${AddCard_Popup_title}  timeout=5s
+    ${error_notification_title} =  get text  ${AddCard_Popup_title}
+    [Return]  ${error_notification_title}
+
+Get Error Notification - Content
+    wait until element is visible  ${AddCard_Popup_content}  timeout=5s
+    ${error_notification_content} =  get text  ${AddCard_Popup_content}
+    [Return]  ${error_notification_content}
+
 Input Bank Card Number
     [Arguments]  ${bank_cardno}
     input text  ${ID_AddCard_CardNo}  ${bank_cardno}
@@ -85,18 +96,17 @@ Input Bank Card Date
     [Arguments]  ${bank_card_date}
     input text  ${ID_AddCard_Date}  ${bank_card_date}
 
-Input Bank Customer Identity Card
+Input Customer Identity Card
     [Arguments]  ${customer_identify_card}
     input text  ${ID_AddCard_CustomerID}  ${customer_identify_card}
 
 Input OTP
     [Arguments]  ${otp}=123456
-    wait until element is visible  ${AddCard_Popup_Input}  timeout=10s
+    wait until element is visible  ${AddCard_Popup_Input}  timeout=20s
     input text  ${AddCard_Popup_Input}  ${otp}
 
-State OF Shown Error Popup
-    ${state_shown_popup} =  run keyword and return status  wait until element is visible  ${AddCard_Popup_title}  timeout=5s
-    [Return]  ${state_shown_popup}
+Verify Shown Error Popup
+    wait until element is visible  ${AddCard_Popup_title}  timeout=5s
 
 Verify Screen Add Card Loaded
     wait until page contains element  ${ID_AddCard_CardNo}  timeout=10s
