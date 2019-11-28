@@ -1,6 +1,6 @@
 *** Settings ***
 Library  SeleniumLibrary
-Library  /Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/site-packages/robot/libraries/String.py
+Library  ../Libraries/String.py
 Library  Dialogs
 Library  String
 
