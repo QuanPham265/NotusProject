@@ -10,7 +10,7 @@ Test Teardown   PO_MainPage.End Web Test
 
 
 *** Variables ***
-${URL}              https://www.instagram.com/?hl=en
+${URL}              https://www.instagram.com
 ${URL_LogIn}        https://www.instagram.com/accounts/login/?hl=en&source=auth_switcher
 ${BROWSER}          ff
 @{USERNAME}         pm_quan    miwa.dol
@@ -32,19 +32,19 @@ ${TAGS_NATURE}      naturephotography   green
 
 
 # HOW TO RUN
-# robot -d /Users/notuspham/Downloads/Log_RF -i all notus_instagram.robot
+# robot -d /Users/notuspham/Downloads/Log_RF -i hashtag notus_instagram.robot
 *** Test Cases ***
 Like Mass Photos By Popular Hashtag
     [Tags]  hashtag  all
     Function.Navigate To Instagram Web  ${URL}
-    Search Tags  vsco
-    run keyword and ignore error  Like Sequentially With Number Account  200
+    Search Tags  instatravel
+    run keyword and ignore error  Like Sequentially With Number Account  4
 #    run    pmset sleepnow
 
 
 Like Potential Instagram Profile
     [Tags]  potential  all
-    :FOR  ${row}  IN RANGE  3800  4000   #odcc 6442
+    :FOR  ${row}  IN RANGE  4400  4700   #odcc 6442
     \   Function.Navigate To Instagram Web  ${URL}
     \   ${user_profile_name} =  Function.Read User Profile Name From File Excel  profile_kol=odcc  row=${row}  sheet=user_like
     \   log to console  ${\n}${row}. User Profile: ${user_profile_name}
